@@ -1,36 +1,55 @@
+import * as _ from 'underscore';
+
 import {pick} from './prob';
 import {moveSpeedLvlFromXp} from './leveling';
+
+
+let gl = {};
+
+
+let DEFAULT_TIME_TO_RESET = 1000;
 
 
 export class Model {
   constructor() {
     this.t = 0;
- 
-    this.workers = [
+    this.tr = DEFAULT_TIME_TO_RESET;
+
+    gl.workers = [
       new Worker()
     ];
-    this.tiles = new Tiles(this.workers);
+    gl.tiles = {};
+    fillFrom(gl.tiles, new Point(0, 0), 10);
   }
 
   updateModel(dt) {
     this.t += dt;
+
+    //console.log(`update model, current time: ${this.t}`);
+
+    _.forEach(gl.workers, (w) => w.work(dt));
+
+    this.maybeReset();
+  }
+
+  maybeReset() {
+    if (this.t < this.tr) {
+      return;
+    }
+
+    console.log(`resetting, 0,0 tile move speed: ${gl.tiles[Point.str(0, 0)]}, 1,0 ${gl.tiles[Point.str(1, 0)]}`);
+
+    this.t = 0;
+    _.forEach(gl.workers, (w) => w.reset());
   }
 }
 
 
-class Tiles {
-  constructor(workers) {
-    this.workers = workers;
-    this.tiles = {};
-    this.fillFrom(new Point(0, 0), 10);
-  }
-
-  fillFrom(start, distance) {
-    for (let i = start.x - distance; i <= start.x + distance; i++) {
-      for (let j = start.y - distance; j <= start.y + distance; j++) {
-        let p = new Point(i, j);
-        this.tiles[p.str()] = new Tile(p);
-      }
+function fillFrom(tiles, start, distance) {
+  for (let i = start.x - distance; i <= start.x + distance; i++) {
+    for (let j = start.y - distance; j <= start.y + distance; j++) {
+      let p = new Point(i, j);
+      tiles['' + p] = new Tile(p);
     }
   }
 }
@@ -49,12 +68,19 @@ class Tile {
   }
 
   improve(dt) {
+    //console.log(`improving ${this.pos} by ${dt}`);
     this.time += dt;
   }
 
-  moveSpeed() {
+  // The time it takes for a worker to move off of this tile.
+  moveTime() {
     // Movement speed increases logarithmically to time spent.
-    return moveSpeedLvlFromXp(this.time);
+    let lvl = moveSpeedLvlFromXp(this.time);
+    return 1000 / (lvl + 1);
+  }
+
+  toString() {
+    return `Tile(pos: ${this.pos}, time: ${this.time} moveTime: ${this.moveTime()})`;
   }
 }
 
@@ -62,14 +88,40 @@ class Tile {
 class Worker {
   constructor() {
     this.path = [new Point(0, 0), new Point(1, 0)];
-    this.pos = new Point(0, 0);
+    this.reset();
+  }
+
+  work(dt) {
+    this.t += dt;
+    let pos = this.path[this.i];
+    let tile = gl.tiles['' + pos];
+
+    tile.improve(dt);
+
+    if (this.i === this.path.length - 1) {
+      return;  // End of the path
+    }
+
+    let tArrive = this.tArrival + tile.moveTime();
+    if (this.t >= tArrive) {
+      this.tArrival = this.t;
+      this.i++;
+      console.log(`worker has arrived at pos ${this.i}`);
+    }
+  }
+
+  reset() {
+    console.log('reset worker');
+    this.i = 0;
+    this.t = 0;
+    this.tArrival = 0;
   }
 }
 
 
 class Point {
-  static sstr(x, y) {
-    return '' + this.x + ',' + this.y;
+  static str(x, y) {
+    return '' + x + ',' + y;
   }
   
   constructor(x, y) {
@@ -77,7 +129,7 @@ class Point {
     this.y = y;
   }
 
-  str() {
-    return Point.sstr(this.x, this.y);
+  toString() {
+    return Point.str(this.x, this.y);
   }
 }

@@ -3,14 +3,14 @@ import {View} from './view';
 import {Model} from './model';
 
 
-let STEP_SIZE = 16;
+let STEP_SIZE = 5;
 
 
 export var MainPage = class extends React.Component {
   constructor(props) {
     super(props);
     this.model = new Model();
-    this.cur = Date.now();
+    this.t = 0;
 
     this.state = this.getState();
 
@@ -19,7 +19,7 @@ export var MainPage = class extends React.Component {
 
   getState() {
     let result = {
-      cur: this.cur
+      t: this.t
     };
     // console.log(`get state, result: ${result.cur}`);
     return result;
@@ -28,15 +28,15 @@ export var MainPage = class extends React.Component {
   tick(now) {
     // Cap the step so the browser doesn't freeze when you return after being
     // blurred for a while.
-    let dt = Math.min(now - this.cur, 1000);
-    this.cur = now;
-    let t = dt;
+    let dt = Math.min(now - this.t, 1000);
+    this.t = now;
+    let tTemp = dt;
 
-    while (t > STEP_SIZE) {
+    while (tTemp > STEP_SIZE) {
       this.model.updateModel(STEP_SIZE);
-      t -= STEP_SIZE;
+      tTemp -= STEP_SIZE;
     }
-    this.model.updateModel(t);
+    this.model.updateModel(tTemp);
 
     this.setState(this.getState());
 
