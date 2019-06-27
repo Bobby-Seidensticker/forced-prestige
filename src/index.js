@@ -12,4 +12,3 @@ function initIndex() {
 module.exports = {
   initIndex : initIndex
 };
- 

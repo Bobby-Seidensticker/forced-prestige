@@ -1,11 +1,6 @@
 let cache = {};
 let N = 1000;
 
-// Exponential growth level converter
-/* export function nextLevel(lvl, base, growthFactor) {
- *   base * Math.pow(growthFactor, (lvl - 1));
- * }*/
-
 export function lvlFromXp(xp, base, growthFactor) {
   let lookup = getLookup(base, growthFactor);
 

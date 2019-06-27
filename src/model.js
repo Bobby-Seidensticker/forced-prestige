@@ -3,11 +3,9 @@ import * as _ from 'underscore';
 import {pick} from './prob';
 import {moveSpeedLvlFromXp} from './leveling';
 
+let DEFAULT_TIME_TO_RESET = 1000;
 
 let gl = {};
-
-
-let DEFAULT_TIME_TO_RESET = 1000;
 
 
 export class Model {
@@ -24,8 +22,6 @@ export class Model {
 
   updateModel(dt) {
     this.t += dt;
-
-    //console.log(`update model, current time: ${this.t}`);
 
     _.forEach(gl.workers, (w) => w.work(dt));
 
@@ -45,9 +41,9 @@ export class Model {
 }
 
 
-function fillFrom(tiles, start, distance) {
-  for (let i = start.x - distance; i <= start.x + distance; i++) {
-    for (let j = start.y - distance; j <= start.y + distance; j++) {
+function fillFrom(tiles, start, dist) {
+  for (let i = start.x - dist; i <= start.x + dist; i++) {
+    for (let j = start.y - dist; j <= start.y + dist; j++) {
       let p = new Point(i, j);
       tiles['' + p] = new Tile(p);
     }
@@ -64,11 +60,10 @@ class Tile {
   constructor(pos) {
     this.pos = pos;
     this.type = TILE_TYPES[pick(TILE_WEIGHTS)];
-    this.time = 0;  // improvement time
+    this.time = 0;  // total time this tile has been improved
   }
 
   improve(dt) {
-    //console.log(`improving ${this.pos} by ${dt}`);
     this.time += dt;
   }
 

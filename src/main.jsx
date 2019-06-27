@@ -18,25 +18,22 @@ export var MainPage = class extends React.Component {
   }
 
   getState() {
-    let result = {
+    return {
       t: this.t
     };
-    // console.log(`get state, result: ${result.cur}`);
-    return result;
   }
 
   tick(now) {
-    // Cap the step so the browser doesn't freeze when you return after being
-    // blurred for a while.
+    // [now] is the time since the first call to RAF
     let dt = Math.min(now - this.t, 1000);
     this.t = now;
-    let tTemp = dt;
 
-    while (tTemp > STEP_SIZE) {
+    let dtRemaining = dt;
+    while (dtRemaining > STEP_SIZE) {
       this.model.updateModel(STEP_SIZE);
-      tTemp -= STEP_SIZE;
+      dtRemaining -= STEP_SIZE;
     }
-    this.model.updateModel(tTemp);
+    this.model.updateModel(dtRemaining);
 
     this.setState(this.getState());
 
