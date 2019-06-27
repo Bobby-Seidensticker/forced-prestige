@@ -43,7 +43,7 @@ export var MainPage = class extends React.Component {
   render() {
     return (
       <div>
-        <View model={this.model} />
+        <View model={this.model} t={this.state.t} />
       </div>
     );
   }

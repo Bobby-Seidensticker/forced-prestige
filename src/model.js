@@ -2,6 +2,7 @@ import * as _ from 'underscore';
 
 import {pick} from './prob';
 import {moveSpeedLvlFromXp} from './leveling';
+import {Point} from './vectorutils';
 
 let DEFAULT_TIME_TO_RESET = 1000;
 
@@ -12,6 +13,7 @@ export class Model {
   constructor() {
     this.t = 0;
     this.tr = DEFAULT_TIME_TO_RESET;
+    this.gl = gl;
 
     gl.workers = [
       new Worker()
@@ -33,7 +35,7 @@ export class Model {
       return;
     }
 
-    console.log(`resetting, 0,0 tile move speed: ${gl.tiles[Point.str(0, 0)]}, 1,0 ${gl.tiles[Point.str(1, 0)]}`);
+    console.log(`resetting, 0,0 tile move speed: ${gl.tiles['' + new Point(0, 0)]}, 1,0 ${gl.tiles['' + new Point(1, 0)]}`);
 
     this.t = 0;
     _.forEach(gl.workers, (w) => w.reset());
@@ -110,21 +112,5 @@ class Worker {
     this.i = 0;
     this.t = 0;
     this.tArrival = 0;
-  }
-}
-
-
-class Point {
-  static str(x, y) {
-    return '' + x + ',' + y;
-  }
-  
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  toString() {
-    return Point.str(this.x, this.y);
   }
 }
