@@ -26,7 +26,9 @@ export var MainPage = class extends React.Component {
   }
 
   tick(now) {
-    let dt = now - this.cur;
+    // Cap the step so the browser doesn't freeze when you return after being
+    // blurred for a while.
+    let dt = Math.min(now - this.cur, 1000);
     this.cur = now;
     let t = dt;
 

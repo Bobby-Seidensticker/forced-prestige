@@ -1,4 +1,5 @@
 import {pick} from './prob';
+import {moveSpeedLvlFromXp} from './leveling';
 
 
 export class Model {
@@ -44,6 +45,16 @@ class Tile {
   constructor(pos) {
     this.pos = pos;
     this.type = TILE_TYPES[pick(TILE_WEIGHTS)];
+    this.time = 0;  // improvement time
+  }
+
+  improve(dt) {
+    this.time += dt;
+  }
+
+  moveSpeed() {
+    // Movement speed increases logarithmically to time spent.
+    return moveSpeedLvlFromXp(this.time);
   }
 }
 
