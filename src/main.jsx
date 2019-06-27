@@ -1,5 +1,6 @@
 import React from 'react';
 import {View} from './view';
+import {Model} from './model';
 
 
 let STEP_SIZE = 16;
@@ -20,7 +21,7 @@ export var MainPage = class extends React.Component {
     let result = {
       cur: this.cur
     };
-    //console.log(`get state, result: ${result.cur}`);
+    // console.log(`get state, result: ${result.cur}`);
     return result;
   }
 
@@ -46,34 +47,5 @@ export var MainPage = class extends React.Component {
         <View model={this.model} />
       </div>
     );
-  }
-}
-
-class Model {
-  constructor() {
-    this.t = 0;
-    
-
-    this.workers = [
-      new Worker()
-    ];
-  }
-
-  updateModel(dt) {
-    this.t += dt;
-  }
-}
-
-class Worker {
-  constructor() {
-    this.path = [new Point(0, 0), new Point(1, 0)];
-    this.pos = new Point(0, 0);
-  }
-}
-
-class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
   }
 }
