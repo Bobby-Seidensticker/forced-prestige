@@ -69,10 +69,14 @@ class Tile {
     this.time += dt;
   }
 
+  level() {
+    return moveSpeedLvlFromXp(this.time);
+  }
+
   // The time it takes for a worker to move off of this tile.
   moveTime() {
     // Movement speed increases logarithmically to time spent.
-    let lvl = moveSpeedLvlFromXp(this.time);
+    let lvl = this.level();
     return 1000 / (lvl + 1);
   }
 

@@ -1,7 +1,10 @@
 import React from 'react';
-import {Point} from './vectorutils';
 
-// IN THE VIEW ALL [Point]s ARE PIXELS, NOT MODEL COORDINATES
+import {Point} from './vectorutils';
+import {logColorShift} from './utils';
+
+// IN THE VIEW ALL LOCAL OR CLASS VARIABLES [Point]s ARE PIXELS, NOT MODEL COORDINATES.
+// DO NOT VIOLATE.  I AM LOOKING AT *YOU* SPECIFICALLY...
 
 var gl;
 
@@ -38,6 +41,17 @@ export var View = class extends React.Component {
     canvas.height = 500;
   }
 
+  drawTile(ctx, tile) {
+    let topLeft = coordToPixel(tile.pos.x, tile.pos.y);
+
+    ctx.fillStyle = logColorShift('#0f0', '#000', tile.level());
+    ctx.fillRect(topLeft.x + 1, topLeft.y + 1, 18, 18);
+
+    ctx.fillStyle = '#000';
+    ctx.font = '10px Helvetica sans-serif';
+    ctx.fillText(tile.type.toUpperCase(), topLeft.x + 3, topLeft.y + 10);
+  }
+
   drawTiles(ctx, tiles) {
     ctx.fillStyle = '#111';
     ctx.fillRect(0, 0, 500, 500);
@@ -45,12 +59,7 @@ export var View = class extends React.Component {
     // Squares are 20px with a 1px gap, so each square is 22px
     for (let i = -10; i <= 10; i++) {
       for (let j = -10; j <= 10; j++) {
-        let topLeft = coordToPixel(i, j);
-        ctx.fillStyle = '#0f0';
-        ctx.fillRect(topLeft.x + 1, topLeft.y + 1, 18, 18)
-        ctx.fillStyle = '#000';
-        ctx.font = '10px Helvetica sans-serif';
-        ctx.fillText(`${i},${j}`, topLeft.x + 3, topLeft.y + 10);
+        this.drawTile(ctx, tiles['' + new Point(i, j)]);
       }
     }
   }
