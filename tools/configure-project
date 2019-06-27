@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd $PROJ_DIR
+
+npm install
+npm outdated
+npm rebuild

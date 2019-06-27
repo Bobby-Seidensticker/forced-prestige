@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "live": "katandkim-live",
+    "staging": "katandkim-staging"
+  }
+}

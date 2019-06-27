@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+cd $PROJ_DIR/public/posts/
+
+find . -name "*html" -print -exec tidy -q -e {} \; 2>&1 | grep -v .jpg 2>&1 | grep -v DOCTYPE 2>&1 | grep -v "implicit <body>" 2>&1 | grep -v "missing 'title'" 2>&1 | grep -v "<img> lacks \"alt\" attribute"

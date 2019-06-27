@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+cd $PROJ_DIR
+
+make all
+
+echo "Running tests..."
+
+mocha lib/test/*.js

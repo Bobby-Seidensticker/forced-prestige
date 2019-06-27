@@ -1,0 +1,7 @@
+set -e
+
+source tools/use
+
+make user
+
+echo "WE ALL GOOD FAM"
