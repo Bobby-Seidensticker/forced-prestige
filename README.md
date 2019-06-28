@@ -24,6 +24,8 @@ The view shows tiles -10, -10 through 10, 10 on a static 500x500 px canvas.
 
 To do:
 
+Render the worker's current position
+Render the worker's path
 Click and drag to set a worker's path
 ???
 Profit
