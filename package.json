@@ -1,13 +1,10 @@
 {
     "name": "forced-prestige-game",
-    "version": "1.0.0",
-    "description": "Forced prestige game in one flight to Hawaii",
+    "version": "0.0.1",
+    "description": "Forced prestige game",
     "main": "public/index.html",
     "engines": {
-        "node": ">=8.11.3"
-    },
-    "dependencies": {
-        "node": "^8.12.0"
+        "node": ">=10.15.0"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
@@ -17,14 +14,11 @@
         "clang-format": "^1.2.4",
         "less": "^3.8.1",
         "mocha": "^5.2.0",
-        "promise-polyfill": "^8.1.0",
-        "prop-types": "^15.6.2",
         "react": "^16.5.2",
         "react-dom": "^16.5.2",
         "react-router-dom": "^4.3.1",
         "source-map-support": "^0.5.9",
-        "underscore": "^1.9.1",
-        "xhr": "^2.5.0"
+        "underscore": "^1.9.1"
     },
     "scripts": {
         "lint": "tools/lint_html",

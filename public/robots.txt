@@ -1,12 +1,4 @@
 User-Agent: *
-Disallow: /tag/*
-Disallow: /search/*
-Disallow: /category/*
-Disallow: /test
 
 Allow: /
-Allow: /shop
 Allow: /about
-Allow: /post/*
-
-Sitemap: https://katandkim.com/sitemap.xml
