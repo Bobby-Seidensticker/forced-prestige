@@ -38,12 +38,13 @@ public/scripts/bundle.js: $(transpiled_js)
 
 src_styles := $(shell find src/styles/ -name '*.less')
 
-transpiled_styles := $(patsubst src/styles/%.less,lib/styles/%.lessc,$(src_styles))
-
 lib/styles/%.lessc: src/styles/%.less
 	mkdir -p $(dir $@)
 	lessc -sm=on $< >$@
 
+transpiled_styles := $(patsubst src/styles/%.less,lib/styles/%.lessc,$(src_styles))
+
 public/styles/main.css: $(transpiled_styles)
+	${shell cat $(shell find lib/styles/ -name '*.lessc') >$@}
 
 all: public/scripts/bundle.js public/styles/main.css

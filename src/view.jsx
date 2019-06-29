@@ -32,15 +32,17 @@ export var View = class extends React.Component {
   }
 
   clear(canvas) {
-    canvas.width = 500;
-    canvas.height = 500;
+    var tileSize = 22;
+    var tileCount = 21;
+    canvas.width = tileSize * tileCount;
+    canvas.height = tileSize * tileCount;
   }
 
   drawTile(ctx, tile) {
     let topLeft = coordToPixel(tile.pos);
 
     ctx.fillStyle = logColorShift('#0f0', '#000', tile.level());
-    ctx.fillRect(topLeft.x + 1, topLeft.y + 1, 18, 18);
+    ctx.fillRect(topLeft.x + 2, topLeft.y + 2, 18, 18);
 
     ctx.fillStyle = '#000';
     ctx.font = '10px Helvetica sans-serif';
