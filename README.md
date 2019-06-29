@@ -16,6 +16,14 @@ To run locally:
 firebase serve
 ```
 
+To build, be in the root dir and:
+
+```
+make all
+```
+
+Current deployed version is on [firebase](https://forced-prestige.firebaseapp.com/)
+
 # Notes
 
 As of 2019-06-27 I have a main loop that updates the game model and then updates a view. Currently just has a Worker that follows a path, improving tiles proportional to how long is spent on them.  Workers move faster the more the tiles are improved.
