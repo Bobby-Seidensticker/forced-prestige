@@ -1,5 +1,8 @@
 import * as _ from 'underscore';
 
+import {Point} from './vectorutils';
+
+
 // 3 digit colors as input, returns a valid color;
 export function logColorShift(rawStart, rawEnd, lvl) {
   if (lvl === 0) return rawStart;
@@ -23,4 +26,32 @@ function segment(color) {
 
 function unsegment(color) {
   return `rgb(${color[0]},${color[1]},${color[2]})`;
+}
+
+export function circle(ctx, center, size, color) {
+  ctx.fillStyle = color;
+  ctx.arc(center.x, center.y, size, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+export function coordToPixel(c) {
+  // the center is currently fixed.
+  let center = new Point(10 * 22, 10 * 22);
+  let unshifted = new Point(c.x * 22, c.y * 22);
+  return center.add(unshifted);
+}
+
+export function lineCenterToCenter(ctx, c1, c2, color) {
+  let p1 = coordToPixel(c1).add(new Point(11, 11));
+  let p2 = coordToPixel(c2).add(new Point(11, 11));
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+
+  ctx.beginPath();
+  ctx.moveTo(p1.x, p1.y);
+  ctx.lineTo(p2.x, p2.y);
+  ctx.stroke();
+  ctx.closePath();
 }

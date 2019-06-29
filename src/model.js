@@ -3,8 +3,7 @@ import * as _ from 'underscore';
 import {pick} from './prob';
 import {moveSpeedLvlFromXp} from './leveling';
 import {Point} from './vectorutils';
-
-let DEFAULT_TIME_TO_RESET = 1000;
+import {DEFAULT_TIME_TO_RESET} from './constants';
 
 let gl = {};
 
@@ -88,18 +87,24 @@ class Tile {
 
 class Worker {
   constructor() {
-    this.path = [new Point(0, 0), new Point(1, 0)];
+    this.path = [new Point(0, 0),
+                 new Point(1, 0),
+                 new Point(2, 0),
+                 new Point(3, 0),
+                 new Point(4, 0),
+                 new Point(4, 1)];
+    // set instance vars i, t, tArrival
     this.reset();
   }
 
   work(dt) {
     this.t += dt;
-    let pos = this.path[this.i];
-    let tile = gl.tiles['' + pos];
+    let tile = this.curTile();
 
     tile.improve(dt);
 
     if (this.i === this.path.length - 1) {
+      console.debug(`sitting at end of path, index: ${this.i}`);
       return;  // End of the path
     }
 
@@ -107,8 +112,32 @@ class Worker {
     if (this.t >= tArrive) {
       this.tArrival = this.t;
       this.i++;
-      console.log(`worker has arrived at pos ${this.i}`);
+      console.info(`worker has arrived at pos ${this.i}, tile ${gl.tiles['' + this.path[this.i]]}`);
     }
+  }
+
+  isAtEnd() {
+    return this.i === this.path.length - 1;
+  }
+
+  curTile() {
+    return gl.tiles['' + this.path[this.i]];
+  }
+
+  nextTile() {
+    if (this.isAtEnd()) {
+      return this.curTile();
+    }
+
+    return gl.tiles['' + this.path[this.i + 1]];
+  }
+
+  // Prop = proportion = percent / 100
+  propToNext() {
+    if (this.isAtEnd()) return 0;
+
+    let tSinceArrival = this.t - this.tArrival;
+    return tSinceArrival / this.curTile().moveTime();
   }
 
   reset() {

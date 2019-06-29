@@ -3,8 +3,6 @@ import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import {AboutPage} from './about';
 import {MainPage} from './main';
 
-window.xhr = require('xhr');
-
 var Router = BrowserRouter;
 
 var NotFound = class extends React.Component {

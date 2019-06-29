@@ -1,0 +1,1 @@
+export var DEFAULT_TIME_TO_RESET = 10000;

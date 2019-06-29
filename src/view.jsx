@@ -1,19 +1,14 @@
 import React from 'react';
+import * as _ from 'underscore';
 
 import {Point} from './vectorutils';
-import {logColorShift} from './utils';
+import {coordToPixel, lineCenterToCenter, circle, logColorShift} from './utils';
 
-// IN THE VIEW ALL LOCAL OR CLASS VARIABLES [Point]s ARE PIXELS, NOT MODEL COORDINATES.
-// DO NOT VIOLATE.  I AM LOOKING AT *YOU* SPECIFICALLY...
+// In variable naming, a Point called point or p is in pixels.
+// coord or c is a coordinate in the model's grid.
+// Don't get it confused.
 
 var gl;
-
-function coordToPixel(i, j) {
-  // the center is currently fixed.
-  let center = new Point(10 * 22, 10 * 22);
-  let unshifted = new Point(i * 22, j * 22);
-  return center.add(unshifted);
-}
 
 export var View = class extends React.Component {
   constructor(props) {
@@ -42,7 +37,7 @@ export var View = class extends React.Component {
   }
 
   drawTile(ctx, tile) {
-    let topLeft = coordToPixel(tile.pos.x, tile.pos.y);
+    let topLeft = coordToPixel(tile.pos);
 
     ctx.fillStyle = logColorShift('#0f0', '#000', tile.level());
     ctx.fillRect(topLeft.x + 1, topLeft.y + 1, 18, 18);
@@ -65,7 +60,24 @@ export var View = class extends React.Component {
   }
 
   drawWorkers(ctx, workers) {
-    
+    _.forEach(workers, (worker) => {
+      for (let i = 0; i < worker.path.length; i++) {
+        let coord = worker.path[i];
+        let tl = coordToPixel(coord);
+
+        if (i > 0) {
+          lineCenterToCenter(ctx,
+                             worker.path[i - 1],
+                             worker.path[i],
+                             '#d00');
+        }
+      }
+
+      let pos = coordToPixel(worker.curTile().pos);
+      let direction = worker.nextTile().pos.sub(worker.curTile().pos);
+      let adjustedPos = pos.add(direction.mult(22 * worker.propToNext()));
+      circle(ctx, adjustedPos.add(new Point(11, 11)), 5, '#f00');
+    });
   }
 
   updateView() {
@@ -84,18 +96,6 @@ export var View = class extends React.Component {
     this.drawTiles(ctx, gl.tiles);
 
     this.drawWorkers(ctx, gl.workers);
-
-    
-
-    /* ctx.fillStyle = '#00f';
-     * ctx.font = '10px Helvetica sans-serif';
-     * let msg = '' + (this.props.t % 100);
-     * let x = (this.x % 10) * 10;
-     * let y = Math.floor((this.x % 100) / 10) * 10;
-     * this.x++;
-     * ctx.fillText(msg, x, y);
-     * console.log('sup');*/
-
   }
 
   render() {
