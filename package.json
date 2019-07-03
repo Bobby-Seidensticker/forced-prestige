@@ -13,6 +13,7 @@
         "browserify": "^16.2.3",
         "clang-format": "^1.2.4",
         "less": "^3.8.1",
+        "keymaster": "^1.6.2",
         "mocha": "^5.2.0",
         "react": "^16.5.2",
         "react-dom": "^16.5.2",

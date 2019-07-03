@@ -1,3 +1,5 @@
+var key = require('keymaster');
+
 import {PathBuilder} from './model';
 import {pixelToCoord} from './utils';
 import {Point} from './vectorutils';
@@ -15,6 +17,10 @@ function coordFromEvent(e, el) {
 export class Controller {
   constructor(model) {
     this.model = model;
+
+    key('enter', function() { console.warn('enter was pressed'); });
+    key('esc', function() { console.warn('esc was pressed'); });
+    key('a', function() { console.warn('a was pressed'); });
   }
 
   handleMouseMove(e, el) {
