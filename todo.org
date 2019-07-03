@@ -1,0 +1,170 @@
+Thanks for all the comments dude!
+
+One thing I want to mention first is that I want to have multiple workers.  My
+current idea is to have you bring wood back to the starting point, which
+upgrades your house and gives you one worker per level.  I think this is a key
+feature, being able to set up multiple workers each doing their own thing (one
+guy collecting stone, one guy spending stone, one guy getting meat, etc...).
+
+Replies inline.
+
+Thinking about differentiating the tiles, brainstormed some simple rules:
+- mountain, forest, farm produce stone, wood, meat respectively
+- each tile produces tileLvl resources
+- upgrading costs 2*(tileLvl) - 1 wood, ie lvl is function of how much wood has been left there
+- meat is "time", gotta eat that meat to go long
+
+I like it.  Splitting up the purpose of the resources is a great idea I hadn't
+thought of.  I think leaving them divided like that is a good way to keep the
+implementation simple for now (mountain = roads, wood = upgrade special tile,
+meat = more time).
+ 
+When unit steps on a tile:
+- if carrying enough resources to upgrade tile, do that first
+- pick up all resources on the tile, tile is empty now
+- upgrade road, if enough stone in inventory, costs 2 x roadLvl - 1 stone
+
+I like a simple resource management control scheme like this is good.  This one
+is also also nice since you don't need to consider the entire path when deciding
+what to do.  Workers pick up resources, and they drop resources if the tile they
+are on can take them.  However, I think it's going to be difficult to make the
+upgrading work well without the ability to drop a partial amount of resources so
+you can work towards upgrading a tile that takes 10x what the worker can hold.
+
+I want to keep the idea of forcing the worker to drop or upgrade a thing, as
+making the control scheme really complex is undesired.  Maybe something like:
+when you set your path, the worker will attempt to upgrade each of the tiles to
+level 2 before upgrading any of them to level 3.
+ 
+Every tile can have roads.  Movement speed on tiles is function of how much
+stone has been left there. Meat is consumed based on time, so moving faster
+consumes less meat per tile.  Unupgraded tiles consume 1 meat per tile in 1sec.
+Meat/secs per tile is ~ 0.95 ^ (lvl-1)
+
+Unit starts with 10 meat, guarantee two of each type within ~4 tiles, enough
+meat to walk 10, so every start is viable.  Rest can be random.
+
+I'm into meat upgrading time, but not so much the actual using of meat.  I think
+maybe we should think of meat as animals, and the more animals you have back at
+home, the more meat you can have per loop.  Meat just increases the global time,
+so there's no keeping track of meat used on a per unit basis.
+ 
+What are you thinking for control scheme?  Idling through loops felt a bit
+clunky, wondering if there's something that would feel more natural.
+
+I actually like the scheme if it wasn't so buggy.  I think you should be able to
+get into path making mode, hold a modifier key to switch between fastest path
+here vs most direct path here, and click to add a node.  We can't show paths for
+all the workers though.  Maybe I'm just fixating on the only implementation I've
+seen...
+ 
+Weird control scheme idea: units are spawned and March off in constant
+direction, you configure the blank tiles to have "arrows" - when unit steps on
+tile it takes arrow direction. Click tile to rotate arrow, 5th state is clear.
+
+Interesting, but it would force all units to have the same path, you could only
+ever have 4 unique paths as there are only 4 directions off of the main tile.
+ 
+Another scheme: Controlling a "list" of actions - little cards that are a
+direction and an amount, X to clear, could work, (Ex. Up 3, right 1, down 1,
+right 3...)  Draw the line to make it easy to visualize predicted path. Could
+make max number of action cards an upgrade?
+- weirder idea - card list is only resources, and it auto-paths. Like "get wood" "get food" "get stone".  Probably too weird
+
+Needs more goal? Maybe put some monument/obelisk tiles in the corners that
+require a huge amount of stone to build and then give a permanent global
+movement speed bonus, all 4 is win?
+
+Yeah, I think that's a great idea for now.  I'd eventually want to make the map
+extend in all directions, but that would also mean implementing zooming and
+scrolling which will be somewhat expensive.
+ 
+Can extend "what it costs to upgrade a tile" to be more interesting as new
+resources are added. A more interesting progression could have "ages" ex, need
+iron for lvl 3+, steel for 5+, etc. And make upgrades require more
+thought. (Gotta communicate these more complex costs to user though) --
+
+Maybe outta scope shit
+
+Could be cool to be able to "build" on tiles, essentially selecting which
+upgrade path it will be on. High levels could produce different better
+resources.  Mountains eventually produce ores? Branching specializations would
+be cool if getting into a more complex crafting system
+
+Could have a shitton of resources and complex costs and so you have to like,
+build a rock forge, put wood in to and smelt iron and all that jazz. Would make
+the above more interesting, could drive the whole thing with json blob.
+
+I like these ideas, but yeah pretty expensive.  I'm thinking that all resources
+will need to be processed back at the center to avoid weirdness with the source
+of resources being different than the starting point.  You can configure each
+worker to pick a refined resource to take with them on their path, and they will
+drop it according to some basic rules.
+
+Summary:
+
+Stone: is mined raw and must be taken back to home base.  It is auto
+upgraded to refined stone, which workers can be configured to pick up on start,
+and will drop on their route to upgrade roads Wood: is mined raw and must be
+taken back to home base.  Workers can be configured to pick up on start, and
+will drop at the first special tile they arrive at.  Animals: are picked up and
+taken back to the city.  Animals in city upgrades total time per reset.
+Resources: take time to mine/chop/herd, which is dependent on building upgrade
+level.
+
+Home base: has a small UI that shows how much of the 3 resources is stored on
+the tile.  You can click on a button to use wood to upgrade your housing to give
+you another worker.
+
+Worker UI: Like ITL, but less janky.  Click on a worker on the sidebar, and you
+are in path edit mode, click tiles to set nodes.  Worker will run that path back
+and forth.  I'm thinking the workers will have a carrying capacity and will go
+do a thing until they are full and start taking it back.  If time runs out while
+they are carrying something, it drops the stuff.  If a worker is gathering
+stone, it will grab a dropped load, and take it back home before returning on
+the path.
+
+Workers can be set to take a refined resource to a location.  Reaching a special
+tile with a refined resource will put that refined resource towards upgrading
+that thing, which increases the gathering rate.
+
+Workers improve roads, but are much less effective than using stone.
+
+Only one worker can gather a resource at a time, extra workers doing the same
+gathering route will sit around improving that tile (same as walking over it).
+This should incentivize improving multiple tiles of the same type.
+
+Workers are not configured to be general purpose, they are set to go to a
+special tile and come back.  Ex: set their path to end at a mountain, they will
+go there, mine stone, bring it back, and pick up dropped stone along the way.
+They can optionally be set to take a load of refined resource there, in which
+case they would not pick up the raw resource on the way back and they will
+improve the thing they mine when they get there.
+
+They can also be set to improve roads, taking raw stone, and evenly distributing
+it along the path they are on, leveling up each road in their loop so they are
+all evenly leveled.  If there is no stone at home, they just walk the path.
+
+Obelisks: exactly as you said.
+
+* View
+** TODO Show path as you are making it
+** TODO Show road upgrade progress
+** TODO Visualize resources dropped on a tile
+** TODO Vis worker status
+
+* Model
+** Resources
+*** IN PROGRESS Double clicking a node loops on that node
+    Clicking the origin still makes the loop.
+
+    Click on nodes, when you double click a node, it will set to mine that node
+    and invert its path. If you double clicked a non-mineable node it will just
+    loop that path.
+*** TODO Workers can mine/chop/herd
+    Looping on a tile means it mines that tile
+
+*** TODO Workers can carry stuff and drop it when their time runs out
+
+* Controller
+** TODO Validation 
