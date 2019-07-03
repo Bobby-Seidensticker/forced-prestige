@@ -1,32 +1,44 @@
-require('./test-base');
-
-import {getImages, expandLayout} from '../instagram';
-import {sampleInstagramData} from './instagram-data';
+import {PathBuilder, dedupNodes, connectNodes} from '../model';
+import {Point} from '../vectorutils';
 
 var assert = require('assert');
-describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal([1,2,3].indexOf(4), -1);
-    });
+
+
+describe('dedupNodes', function() {
+  it('Point arrs should be equal', function() {
+    assert.deepEqual(
+      [new Point(0, 0), new Point(1, 0)],
+      [new Point(0, 0), new Point(1, 0)]
+    );
+  });
+
+  it('Point arrs should be not equal', function() {
+    assert.notDeepEqual(
+      [new Point(0, 0), new Point(0, 0), new Point(1, 0)],
+      [new Point(0, 0), new Point(1, 0)]
+    );
+  });
+
+  it('should work basic', function() {
+    assert.deepEqual(
+      dedupNodes([new Point(0, 0), new Point(0, 0), new Point(1, 0)]),
+      [new Point(0, 0), new Point(1, 0)]
+    );
+  });
+
+  it('should work with multiple', function() {
+    assert.deepEqual(
+      dedupNodes([new Point(0, 0), new Point(0, 0), new Point(1, 0), new Point(1, 0), new Point(1, 0)]),
+      [new Point(0, 0), new Point(1, 0)]
+    );
   });
 });
 
-
-describe('Instagram', function() {
-  describe('getImages', function() {
-    it('should give correct urls', function() {
-      var urls = getImages(sampleInstagramData, 1);
-      assert.equal(urls[0], "https:\/\/scontent.cdninstagram.com\/vp\/4482052d05d9c9cdc92a2870a2be659d\/5C626DDB\/t51.2885-15\/e35\/p320x320\/41621787_312704289505358_9459154790316370_n.jpg");
-      assert.equal(urls.length, 1);
-    });
-  });
-
-  describe('layout expander', function() {
-    it('should work', function() {
-      var expanded = expandLayout('aiai');
-      assert.deepEqual(expanded[0], ['kat', 0]);
-    });
+describe('connectNodes', function() {
+  it('should work basic', function() {
+    assert.deepEqual(
+      connectNodes([new Point(0, 0), new Point(3, 0)]),
+      [new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0)]
+    );
   });
 });
-

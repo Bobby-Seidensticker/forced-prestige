@@ -1,6 +1,7 @@
 import React from 'react';
 import {View} from './view';
 import {Model} from './model';
+import {Controller} from './controller';
 
 
 let STEP_SIZE = 5;
@@ -10,6 +11,7 @@ export var MainPage = class extends React.Component {
   constructor(props) {
     super(props);
     this.model = new Model();
+    this.controller = new Controller(this.model);
     this.t = 0;
 
     this.state = this.getState();
@@ -43,7 +45,7 @@ export var MainPage = class extends React.Component {
   render() {
     return (
       <div>
-        <View model={this.model} t={this.state.t} />
+        <View model={this.model} controller={this.controller} t={this.state.t} />
       </div>
     );
   }

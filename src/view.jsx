@@ -1,6 +1,7 @@
 import React from 'react';
 import * as _ from 'underscore';
 
+import {Controller} from './controller';
 import {Point} from './vectorutils';
 import {coordToPixel, lineCenterToCenter, circle, logColorShift} from './utils';
 
@@ -8,9 +9,9 @@ import {coordToPixel, lineCenterToCenter, circle, logColorShift} from './utils';
 // coord or c is a coordinate in the model's grid.
 // Don't get it confused.
 
-var gl;
+let gl;
 
-export var View = class extends React.Component {
+export let View = class extends React.Component {
   constructor(props) {
     super(props);
     this.c = React.createRef();
@@ -100,7 +101,20 @@ export var View = class extends React.Component {
     this.drawWorkers(ctx, gl.workers);
   }
 
+  handleMouseMove(reactEvent) {
+    this.props.controller.handleMouseMove(reactEvent.nativeEvent, this.c.current);
+  }
+
+  handleMouseDown(reactEvent) {
+    this.props.controller.handleMouseDown(reactEvent.nativeEvent, this.c.current);
+  }
+
   render() {
-    return <canvas ref={this.c}></canvas>;
+    return (
+      <canvas ref={this.c}
+              onMouseMove={this.handleMouseMove.bind(this)}
+              onMouseDown={this.handleMouseDown.bind(this)}>
+      </canvas>
+    );
   }
 };

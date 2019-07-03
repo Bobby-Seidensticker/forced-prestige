@@ -37,6 +37,10 @@ Point.prototype.flip = function() { return new Point(this.y, this.x); };
 Point.prototype.mult = function(
   scalar) { return new Point(this.x * scalar, this.y * scalar); };
 
+Point.prototype.floor = function() {
+  return new Point(Math.floor(this.x), Math.floor(this.y));
+}
+
 Point.prototype.dist = function(p) { return Math.sqrt(this.dist2(p)); };
 
 Point.prototype.dist2 = function(p) {

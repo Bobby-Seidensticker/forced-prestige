@@ -3,7 +3,7 @@ set -e
 
 cd $PROJ_DIR
 
-make all
+make all_js
 
 echo "Running tests..."
 

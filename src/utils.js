@@ -41,6 +41,15 @@ export function coordToPixel(c) {
   return center.add(unshifted);
 }
 
+// Takes a point
+export function pixelToCoord(p) {
+  // the center is currently fixed.
+  let center = new Point(10 * 22, 10 * 22);
+  let shifted = p.sub(center);
+  return shifted.mult(1 / 22).floor();
+}
+
+// Draw a line on a canvas from COORD 1 to COORD 2
 export function lineCenterToCenter(ctx, c1, c2, color) {
   let p1 = coordToPixel(c1).add(new Point(11, 11));
   let p2 = coordToPixel(c2).add(new Point(11, 11));
