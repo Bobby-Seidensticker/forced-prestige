@@ -46,6 +46,7 @@ export var MainPage = class extends React.Component {
     return (
       <div>
         <View model={this.model} controller={this.controller} t={this.state.t} />
+        <a href='/help'>Help</a>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import {AboutPage} from './about';
+import {HelpPage} from './help';
 import {MainPage} from './main';
 
 var Router = BrowserRouter;
@@ -21,6 +22,7 @@ export const MainRouter = () => (
     <Switch>
       <Route exact path='/' component={MainPage} />
       <Route exact path='/about' component={AboutPage} />
+      <Route exact path='/help' component={HelpPage} />
       <Route component={NotFound} />
     </Switch>
   </Router>

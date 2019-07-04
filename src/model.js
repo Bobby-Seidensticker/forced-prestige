@@ -82,7 +82,7 @@ class Tile {
   constructor(pos) {
     this.pos = pos;
 
-    if (pos === new Point(0, 0)) {
+    if (pos.equal(new Point(0, 0))) {
       // The origin never has as type
       this.type = EMPTY;
     } else {
@@ -203,6 +203,10 @@ class Worker {
 
   setGather(coord) {
     this.gatheringAt = coord;
+
+    if (gl.tiles[coord] && gl.tiles[coord].type === EMPTY) {
+      this.gatheringAt = null;
+    }
   }
 
   gatheringWhat() {
