@@ -1,0 +1,8 @@
+#!/bin/bash
+# Because Google engineers cannot imagine a world where someone does not have an
+# omnipresent internet connection.
+
+cd $PROJ_DIR/public
+echo "Blindly starting server on 5000"
+python -m webbrowser -t http://localhost:5000
+python -m SimpleHTTPServer 5000
