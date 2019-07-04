@@ -153,21 +153,23 @@ Obelisks: exactly as you said.
 ** TODO Visualize resources dropped on a tile
 ** TODO Vis worker status
 ** TODO Hovercard over tile shows what's going on in that tile
+** DONE Vis timer
 
 * Model
 ** Resources
 *** DONE Double clicking a node loops on that node
     Clicking the origin still makes the loop.
-
     Click on nodes, when you double click a node, it will set to mine that node
     and invert its path. If you double clicked a non-mineable node it will just
     loop that path.
-*** IN PROGRESS Workers can mine/chop/herd
+*** DONE Workers can mine/chop/herd
     Looping on a tile means it mines that tile
 *** TODO Gathering and movement have their own levels
 *** TODO Workers can pick up refined resources from the home base.
 *** TODO Gathering and movement can be upgraded with resources
 *** TODO Workers can carry stuff and drop it when their time runs out
+    Workers that are gathering X resource will pick up and take back resource X
+    if they happen to run into a tile with it.
 
 * Controller
 ** TODO Validation 

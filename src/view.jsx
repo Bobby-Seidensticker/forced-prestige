@@ -10,6 +10,10 @@ import {WORKER_ACTIONS, MOVING, GATHERING, WAITING} from './constants';
 // coord or c is a coordinate in the model's grid.
 // Don't get it confused.
 
+let tileSize = 22;
+let tileCount = 21;
+let BOARD_SIZE = tileSize * tileCount
+
 export let View = class extends React.Component {
   constructor(props) {
     super(props);
@@ -31,10 +35,8 @@ export let View = class extends React.Component {
   }
 
   clear(canvas) {
-    var tileSize = 22;
-    var tileCount = 21;
-    canvas.width = tileSize * tileCount;
-    canvas.height = tileSize * tileCount;
+    canvas.width = BOARD_SIZE;
+    canvas.height = BOARD_SIZE;
   }
 
   drawTile(ctx, tile) {
@@ -111,10 +113,28 @@ export let View = class extends React.Component {
 
   render() {
     return (
-      <canvas ref={this.c}
-              onMouseMove={this.handleMouseMove.bind(this)}
-              onMouseDown={this.handleMouseDown.bind(this)}>
-      </canvas>
+      <div>
+        <Timer model={this.props.model} />
+        <canvas ref={this.c}
+                onMouseMove={this.handleMouseMove.bind(this)}
+                onMouseDown={this.handleMouseDown.bind(this)}>
+        </canvas>
+      </div>
     );
   }
 };
+
+export let Timer = class extends React.Component {
+  render() {
+    let innerStyle = {
+      width: `${this.props.model.proportionTimeRemaining() * 100}%`,
+    };
+
+    return (
+      <div className='timer'>
+        <div className='timer-inner' style={innerStyle}></div>
+        <div className='text'>{Math.floor(this.props.model.timeRemaining() / 100) / 10}</div>
+      </div>
+    );
+  }
+}

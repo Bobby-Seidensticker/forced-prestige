@@ -34,6 +34,14 @@ export class Model {
     this.maybeReset();
   }
 
+  timeRemaining() {
+    return this.tr - this.t;
+  }
+
+  proportionTimeRemaining() {
+    return this.timeRemaining() / this.tr;
+  }
+
   maybeReset() {
     if (this.t < this.tr) {
       return;
