@@ -164,6 +164,7 @@ Obelisks: exactly as you said.
     loop that path.
 *** DONE Workers can mine/chop/herd
     Looping on a tile means it mines that tile
+*** DONE Animals at home increases total time to reset
 *** TODO Gathering and movement have their own levels
 *** TODO Workers can pick up refined resources from the home base.
 *** TODO Gathering and movement can be upgraded with resources

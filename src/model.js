@@ -1,9 +1,9 @@
 import * as _ from 'underscore';
 
 import {pick} from './prob';
-import {moveSpeedLvlFromXp} from './leveling';
+import {moveSpeedLvlFromXp, resetTimeFromAnimals} from './leveling';
 import {Point} from './vectorutils';
-import {DEFAULT_TIME_TO_RESET, WORKER_ACTIONS, MOVING, GATHERING, WAITING} from './constants';
+import {WORKER_ACTIONS, MOVING, GATHERING, WAITING} from './constants';
 import {assert} from './utils';
 
 let gl = {};
@@ -12,7 +12,6 @@ let gl = {};
 export class Model {
   constructor() {
     this.t = 0;
-    this.tr = DEFAULT_TIME_TO_RESET;
 
     this.workers = [
       new Worker()
@@ -26,6 +25,12 @@ export class Model {
     this.pathBuilder = null;
   }
 
+  // Total time to reset, currently only based on how many animals at home.
+  tr() {
+    let animalsAtHome = this.tiles[new Point(0, 0)].resources[ANIMAL];
+    return resetTimeFromAnimals(animalsAtHome);
+  }
+
   updateModel(dt) {
     this.t += dt;
 
@@ -35,15 +40,15 @@ export class Model {
   }
 
   timeRemaining() {
-    return this.tr - this.t;
+    return this.tr() - this.t;
   }
 
   proportionTimeRemaining() {
-    return this.timeRemaining() / this.tr;
+    return this.timeRemaining() / this.tr();
   }
 
   maybeReset() {
-    if (this.t < this.tr) {
+    if (this.t < this.tr()) {
       return;
     }
 
@@ -65,15 +70,24 @@ function fillFrom(tiles, start, dist) {
 }
 
 
-// forest, mountain, animal
-let RESOURCES = ['f', 'm', 'a'];
-let TILE_TYPES =  [''].concat(RESOURCES);
+let EMPTY = '';
+let FOREST = 'f';
+let MOUNTAIN = 'm';
+let ANIMAL = 'a';
+let RESOURCES = [FOREST, MOUNTAIN, ANIMAL];
+let TILE_TYPES =  [EMPTY].concat(RESOURCES);
 let TILE_WEIGHTS = [15,  2,   2,   1];
 
 class Tile {
   constructor(pos) {
     this.pos = pos;
-    this.type = TILE_TYPES[pick(TILE_WEIGHTS)];
+
+    if (pos === new Point(0, 0)) {
+      // The origin never has as type
+      this.type = EMPTY;
+    } else {
+      this.type = TILE_TYPES[pick(TILE_WEIGHTS)];
+    }
     this.time = 0;  // total time this tile has been improved
 
     this.resources = {};

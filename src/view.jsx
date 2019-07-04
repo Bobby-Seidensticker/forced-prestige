@@ -133,7 +133,11 @@ export let Timer = class extends React.Component {
     return (
       <div className='timer'>
         <div className='timer-inner' style={innerStyle}></div>
-        <div className='text'>{Math.floor(this.props.model.timeRemaining() / 100) / 10}</div>
+        <div className='text'>
+          {Math.floor(this.props.model.timeRemaining() / 100) / 10}
+          /
+          {Math.floor(this.props.model.tr() / 100) / 10}
+        </div>
       </div>
     );
   }
