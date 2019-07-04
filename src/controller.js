@@ -25,6 +25,9 @@ export class Controller {
 
   handleMouseMove(e, el) {
     let coord = coordFromEvent(e, el);
+
+    console.info(`Hover over tile ${coord} ` +
+                 `${this.model.tiles[coord]}`);
   }
 
   startPath() {
@@ -36,14 +39,23 @@ export class Controller {
     let didClickOrigin = coord.equal(new Point(0, 0));
     let isBuildingPath = this.model.pathBuilder !== null;
 
-    console.warn(`handling mouse down, didClickOrigin: ${didClickOrigin} isBuildingPath ${isBuildingPath}`);
+    console.info(
+      `handling mouse down, didClickOrigin: ${didClickOrigin} ` +
+      `isBuildingPath ${isBuildingPath}`);
 
     if (isBuildingPath) {
+      let hasDoubleClicked = coord.equal(this.model.pathBuilder.lastClickedNode);
+      console.info(`hasDoubleClicked ${hasDoubleClicked}`);
+
       if (didClickOrigin) {
-        this.model.pathBuilder.save();
+        this.model.pathBuilder.saveNoGather();
+        this.model.pathBuilder = null;
+      } else if (hasDoubleClicked) {
+        this.model.pathBuilder.saveGather(coord);
         this.model.pathBuilder = null;
       } else {
         this.model.pathBuilder.addNode(coord);
+        this.model.pathBuilder.lastClickedNode = coord;
       }
     } else {
       if (didClickOrigin) {

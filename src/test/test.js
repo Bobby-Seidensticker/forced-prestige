@@ -1,4 +1,4 @@
-import {PathBuilder, dedupNodes, connectNodes} from '../model';
+import {PathBuilder, dedupNodes, connectNodes, mirror} from '../model';
 import {Point} from '../vectorutils';
 
 var assert = require('assert');
@@ -39,6 +39,22 @@ describe('connectNodes', function() {
     assert.deepEqual(
       connectNodes([new Point(0, 0), new Point(3, 0)]),
       [new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0)]
+    );
+  });
+});
+
+describe('mirror', function() {
+  it('should work basic', function() {
+    assert.deepEqual(
+      mirror([1, 2, 3]),
+      [1, 2, 3, 2, 1]
+    );
+  });
+
+  it('returns [] for []', function() {
+    assert.deepEqual(
+      mirror([]),
+      []
     );
   });
 });

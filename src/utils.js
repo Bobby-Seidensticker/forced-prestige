@@ -64,3 +64,13 @@ export function lineCenterToCenter(ctx, c1, c2, color) {
   ctx.stroke();
   ctx.closePath();
 }
+
+export function assert(expression, message) {
+  if (!expression) {
+    if (message && message.length) {
+      console.error(`AssertionError: ${message}`);
+    } else {
+      console.error('AssertionError');
+    }
+  }
+}

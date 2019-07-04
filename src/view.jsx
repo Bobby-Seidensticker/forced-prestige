@@ -4,12 +4,11 @@ import * as _ from 'underscore';
 import {Controller} from './controller';
 import {Point} from './vectorutils';
 import {coordToPixel, lineCenterToCenter, circle, logColorShift} from './utils';
+import {WORKER_ACTIONS, MOVING, GATHERING, WAITING} from './constants';
 
 // In variable naming, a Point called point or p is in pixels.
 // coord or c is a coordinate in the model's grid.
 // Don't get it confused.
-
-let gl;
 
 export let View = class extends React.Component {
   constructor(props) {
@@ -17,7 +16,6 @@ export let View = class extends React.Component {
     this.c = React.createRef();
     this.x = 0;
     this.initialized = false;
-    gl = this.props.model.gl;
   }
 
   componentDidMount() {
@@ -77,9 +75,11 @@ export let View = class extends React.Component {
       }
 
       let pos = coordToPixel(worker.curTile().pos);
-      let direction = worker.nextTile().pos.sub(worker.curTile().pos);
-      let adjustedPos = pos.add(direction.mult(22 * worker.propToNext()));
-      circle(ctx, adjustedPos.add(new Point(11, 11)), 5, '#f00');
+      if (worker.curAction() === MOVING) {
+        let direction = worker.nextTile().pos.sub(worker.curTile().pos);
+        pos = pos.add(direction.mult(22 * worker.propToNext()));
+      }
+      circle(ctx, pos.add(new Point(11, 11)), 5, '#f00');
     });
   }
 
@@ -96,9 +96,9 @@ export let View = class extends React.Component {
     this.clear(el);
     let ctx = el.getContext('2d');
 
-    this.drawTiles(ctx, gl.tiles);
+    this.drawTiles(ctx, this.props.model.tiles);
 
-    this.drawWorkers(ctx, gl.workers);
+    this.drawWorkers(ctx, this.props.model.workers);
   }
 
   handleMouseMove(reactEvent) {
